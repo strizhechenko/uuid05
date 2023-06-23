@@ -4,7 +4,10 @@ in small non-synchronizing distributed systems.
 Well, it's not really unique (that's why 0.5) and collisions are possible
 but probability is low and it's probably acceptable.
 
-The library provides you with just 2 functions: `uuid05() -> int` and `int2b64(int) -> str` and have zero dependencies.
+The library have zero dependencies and provides you with a class: `UUID05` based on `int` with two additional methods:
+
+- `make()` - sort of constructor.
+- `as_b64() -> str` - alternative representation.
 
 **Examples** below explain how it works:
 
@@ -32,12 +35,12 @@ pip install uuid05
 ## Using
 
 ``` python
-from uuid05 import uuid05, int2b64
+from uuid05 import UUID05
 
 # May be parametrized by workers: int, ttl: int, precision: int
 # defaults are: workers=10, ttl=2 days, precision=1
-uid: int = uuid05()
-suffix: str = int2b64(uid)
+uid = UUID05.make()
+suffix: str = uid.as_b64()
 object_name: str = f'autotest_object_{suffix}'
 ```
 
@@ -56,10 +59,12 @@ $ uuid05 -b -w 2
 FvN2
 $ uuid05 -b
 AxHktA
-$ uuid --help
+$ uuid05 -b -a '_-' -w 64
+eB_5Yg
+$ uuid05 --help
 ```
 
-## When UUID05 is suitable
+## Where UUID05 is useful
 
 In E2E/UI-testing. It's slow, and sometimes you need to check a data created by tests _after_ run.
 
@@ -72,7 +77,7 @@ You also may want identifiers to be more or less rememberable for at least 10-15
 Oh, and you _don't_ want to synchronize workers via network.
 Otherwise Redis, Memcached or another database with a single INCRementing counter would do the trick.
 
-## When UUID05 isn't suitable
+## When UUID05 is useless
 
 - If your system isn't distributed. Local counter in memory or file will work better.
 - If your objects are persistent - you'd better use [py-nanoid](https://github.com/puyuan/py-nanoid). 
@@ -82,7 +87,7 @@ Otherwise Redis, Memcached or another database with a single INCRementing counte
     - `precision=3` argument will use milliseconds.
     - `precision=6` for microseconds.
   - if `precision=6` is not enough stop trying to make your identifier compact.
-- If you believe that semi-persistent data is a testing antipattern, 
+- If you believe that semi-persistent data is a testing antipattern,
   and it should be cleared by testing system before or after each run.
 
 ## Development
