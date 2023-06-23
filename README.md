@@ -41,6 +41,24 @@ suffix: str = int2b64(uid)
 object_name: str = f'autotest_object_{suffix}'
 ```
 
+It can be also used as an utility from command-line:
+
+``` shell
+$ uuid05
+61503153
+$ uuid05 -w 2
+1503125
+$ uuid05 -t 3600 -w 2
+27091
+$ uuid05 -b -t 3600 -w 2
+aZ8
+$ uuid05 -b -w 2
+FvN2
+$ uuid05 -b
+AxHktA
+$ uuid --help
+```
+
 ## When UUID05 is suitable
 
 In E2E/UI-testing. It's slow, and sometimes you need to check a data created by tests _after_ run.
