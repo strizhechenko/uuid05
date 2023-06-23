@@ -8,20 +8,20 @@ The library provides you with just 2 functions: `uuid05() -> int` and `int2b64(i
 
 **Examples** below explain how it works:
 
-| TTL <br/>(seconds) | Workers | Worker ID | Example value | Max value     | int2b64(max_value) |
-|--------------------|---------|-----------|---------------|---------------|--------------------|
-| 3600 (hour)        | 2       | 1         | 9589          | 132400        | AgUw               |
-| 3600               | 4       | 2         | 29589         | 332400        | BRJw               |
-| 3600               | 10      | 4         | 49589         | 932400        | Djow               |
-| 3600               | 16      | 1         | 195893        | 15356400      | 6lHw               |
-| 3600               | 32      | 11        | 1195893       | 31356400      | Ad518A             |
-| 3600               | 256     | 53        | 539589397     | 25535996400   | BfIQYfA            |
-| 172800 (2 days)    | 2       | 1         | 1449589       | 11555200      | sFGA               |
-| 172800             | 4       | 2         | 21449589      | 31555200      | AeF-gA             |
-| 172800             | 10      | 4         | 41449589      | 91555200      | BXUFgA             |
-| 172800             | 16      | 4         | 414495893     | 1517107200    | Wm04AA             |
-| 172800             | 32      | 14        | 1414495893    | 3117107200    | uctIAA             |
-| 172800             | 256     | 179       | 1791449589397 | 2551727827200 | AlIe1KkA           |
+| TTL <br/>(seconds) | Workers | Worker ID | Example value |     Max value | int2b64(max_value) |
+|-------------------:|--------:|----------:|--------------:|--------------:|--------------------|
+|        (hour) 3600 |       2 |         1 |          9589 |        132400 | AgUw               |
+|               3600 |       4 |         2 |         29589 |        332400 | BRJw               |
+|               3600 |      10 |         4 |         49589 |        932400 | Djow               |
+|               3600 |      16 |         1 |        195893 |      15356400 | 6lHw               |
+|               3600 |      32 |        11 |       1195893 |      31356400 | Ad518A             |
+|               3600 |     256 |        53 |     539589397 |   25535996400 | BfIQYfA            |
+|    (2 days) 172800 |       2 |         1 |       1449589 |      11555200 | sFGA               |
+|             172800 |       4 |         2 |      21449589 |      31555200 | AeF-gA             |
+|             172800 |      10 |         4 |      41449589 |      91555200 | BXUFgA             |
+|             172800 |      16 |         4 |     414495893 |    1517107200 | Wm04AA             |
+|             172800 |      32 |        14 |    1414495893 |    3117107200 | uctIAA             |
+|             172800 |     256 |       179 | 1791449589397 | 2551727827200 | AlIe1KkA           |
 
 ## Installing
 
@@ -70,4 +70,4 @@ Otherwise Redis, Memcached or another database with a single INCRementing counte
 ## Development
 
 - Tests are doctests and may be run by `pytest`.
-- Documentation - look at code, it's a single file.
+- Documentation - look at code, it's just two files.
