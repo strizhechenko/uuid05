@@ -3,6 +3,8 @@ from time import time
 import os
 
 day = 86400
+disable_cache = False
+
 
 worker_id = os.getpid()
 if worker_id == 1:  # prevent collisions while running in multiple containers
@@ -12,14 +14,13 @@ if worker_id == 1:  # prevent collisions while running in multiple containers
 
 
 class UUID05(int):
+    previous_values = dict()
+
     def as_b64(self, *args, **kwargs) -> str:
         """
-        If you're using uuid05 results as strings and want it to be more compact, and being integer or not doesn't matter
-        you may use this function to encode it to base64. You can transparently pass arguments of b64encode function here.
-        As there's not decoding assumed padding symbols are removed.
-        %timeit UUID05.make().as_b64() - 2.87 µs ± 13.9 ns per loop @ 3.2 GHz
-        %timeit UUID05.make().as_b64() - 1.54 µs ± 5.25 ns per loop @ 3.8 GHz
-        %timeit UUID05(1333).as_b64() - 608 ns ± 2.68 ns per loop (with static UUID (skips generation))
+        If you're using uuid05 results as strings and want it to be more compact, and being integer or not
+        doesn't matter you may use this function to encode it to base64. You can transparently pass
+        arguments of b64encode function here. As there's not decoding assumed padding symbols are removed.
         >>> UUID05(34714).as_b64(altchars=b'_-')
         'h5o'
         >>> UUID05(11402098).as_b64(altchars=b'_-')
@@ -35,12 +36,6 @@ class UUID05(int):
     @classmethod
     def make(cls, workers=10, ttl=2 * day, precision=0) -> 'UUID05':
         """
-        Compact human-readable unique identifiers for temporary objects in small non-synchronizing distributed systems.
-        If your objects are persistent - you'd better use nanoid.
-        If you need to generate multiple UIDs for multiple object at once - generate one and use loop variable as suffix.
-        %timeit UUID05.make() - 2.1 µs ± 2.08 ns per loop @ 3.2GHz
-        %timeit UUID05.make() - 849 ns ± 1.73 ns per loop @ 3.8GHz
-        %timeit UUID05.make() - 717 ns ± 1.76 ns per loop @ 4.7GHz
         :arg workers - count of hosts in a system;
         :arg ttl - how many seconds a temporary object lives in a system (maximum) before being deleted;
         :arg precision (optional) - you can override (increase) a precision if objects are created frequently (max - 6);
@@ -50,11 +45,31 @@ class UUID05(int):
         >>> assert UUID05.make(10, 2 * 86400) <= 91555200
         >>> assert UUID05.make(16, 3600) <= 15356400
         >>> assert UUID05.make(16, 1800) <= 15178200
+        >>> assert UUID05.make() != UUID05.make()
         """
         precision = min(6, precision or int(workers ** (1 / 4)))
         run_id = worker_id % (workers - 1)
-        time_id = int((time() % ttl) * 10 ** precision)
-        return UUID05(f'{run_id}{time_id}')
+        now = time()
+        time_id = int((now % ttl) * 10 ** precision)
+        result = UUID05(f'{run_id}{time_id}')
+
+        if disable_cache:
+            return result
+
+        if (previous := cls.previous_values.get((workers, ttl, precision))) is None:
+            cls.previous_values[(workers, ttl, precision)] = result, now
+            return result
+
+        value, calculated_at = previous
+        # value < result -> enough time passed since .make() was used in for loop
+        # now - calculated_at > ttl / 2 -> such usage is abusing collision preventing mechanism
+        if value < result or now - calculated_at > ttl / 2:
+            cls.previous_values[(workers, ttl, precision)] = result, now
+            return result
+
+        # We're probably called in a cycle. Trying to handle it by incrementing previous value.
+        cls.previous_values[(workers, ttl, precision)] = value + 1, now
+        return cls.previous_values[(workers, ttl, precision)][0]
 
     @classmethod
     def max_value(cls, workers=10, ttl=2 * day, precision=0) -> 'UUID05':

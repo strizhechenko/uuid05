@@ -98,6 +98,8 @@ Otherwise Redis, Memcached or another database with a single INCRementing counte
 - If your objects are persistent, you'd better use [py-nanoid](https://github.com/puyuan/py-nanoid).
 - If you need to generate multiple UIDs for multiple object really _quick_:
   - generate one and reuse it, using a semantic or loop variable as a suffix;
+  - well, there's a simple collision preventing mechanism, allowing _small_ "bursts" of loops;
+    - If you seek for performance, disable it (`uuid05.disable_cache = True`) to win ~32% time.
   - pass **precision** argument to `uuid05()`. It scales automatically with worker count,
     but if there are less than 16 workers, default is 1 which means 1 uuid per 0.1 second, usually it's enough.
     - `precision=3` argument will use milliseconds.
@@ -105,6 +107,16 @@ Otherwise Redis, Memcached or another database with a single INCRementing counte
   - if `precision=6` is not enough, stop trying to make your identifier compact.
 - If you believe that semi-persistent data is a testing antipattern,
   and it should be cleared by the testing system before or after each run.
+
+## Benchmarks
+
+| Function                | CPU Frequency (GHz) | Collision prevening mechanism enabled | Mean time, ns |
+|:------------------------|--------------------:|---------------------------------------|--------------:|
+| `UUID05.make()`         |              3.8GHz | True                                  |           868 |
+| `UUID05.make()`         |              3.8GHz | False                                 |          1300 |
+| `UUID05.make()`         |              4.7GHz | True                                  |           779 |
+| `UUID05.make()`         |              4.7GHz | False                                 |          1070 |
+| `UUID05(1333).as_b64()` |              3.8GHz | n/a                                   |           596 |
 
 ## Development
 
