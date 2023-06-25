@@ -37,11 +37,25 @@ pip install uuid05
 ``` python
 from uuid05 import UUID05
 
-# May be parametrized by workers: int, ttl: int, precision: int
-# defaults are: workers=10, ttl=2 days, precision=1
+# basic usage
 uid = UUID05.make()
 suffix: str = uid.as_b64()
 object_name: str = f'autotest_object_{suffix}'
+
+# .make() may be parametrized by workers: int, ttl: int, precision: int
+# defaults are: workers=10, ttl=2 days, precision=1
+uid: int = UUID05.make(workers=16, ttl=86400, precision=6)  # 1419554951415
+uid.as_b64()  # 'AUqEXzNy'
+
+# you may also want to just shorten your existing integer identifiers.
+suffix: str = UUID05(123123123123).as_b64()
+assert suffix == 'HKq1w7M'
+
+# How to get maximum UUID value/length with given params?
+max_value = UUID05.max_value(machines=16, ttl=86400, precision=6)  # 1586399913600
+len(str(max_value)) == 13
+len(max_value.as_b64()) == 8  # AXFczaaA
+len(f'autotest_object_{max_value.as_b64()}') == 23  # autotest_object_AXFczaaA
 ```
 
 It can be also used as an utility from command-line:
@@ -83,7 +97,8 @@ Otherwise Redis, Memcached or another database with a single INCRementing counte
 - If your objects are persistent - you'd better use [py-nanoid](https://github.com/puyuan/py-nanoid). 
 - If you need to generate multiple UIDs for multiple object really _quick_:
   - generate one and reuse it, using a semantic or loop variable as a suffix;
-  - pass **precision** argument to `uuid05()`. It scales automatically with worker count, but if there are less than 16 workers, default is 1 which means 1 uuid per 0.1 second, usually it's enough.
+  - pass **precision** argument to `uuid05()`. It scales automatically with worker count,
+    but if there are less than 16 workers, default is 1 which means 1 uuid per 0.1 second, usually it's enough.
     - `precision=3` argument will use milliseconds.
     - `precision=6` for microseconds.
   - if `precision=6` is not enough stop trying to make your identifier compact.

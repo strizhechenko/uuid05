@@ -12,6 +12,7 @@ def main():
     parser.add_argument('-p', '--precision', type=int, help='Increase up to 6 if you create objects frequently.')
     parser.add_argument('-b', '--base64', action='store_true', help='Use base64 to compact it event more')
     parser.add_argument('-a', '--altchars', type=str, help='Alternative characters for b64encode')
+    parser.add_argument('-m', '--max-value', action='store_true', help='Return maximum possible value for given params')
     args = parser.parse_args()
     kwargs = {}
     if args.workers:
@@ -20,7 +21,7 @@ def main():
         kwargs['ttl'] = args.ttl
     if args.precision:
         kwargs['precision'] = args.precision
-    uid: UUID05 = UUID05.make(**kwargs)
+    uid: UUID05 = UUID05.max_value(**kwargs) if args.max_value else UUID05.make(**kwargs)
     print((uid.as_b64(altchars=args.altchars.encode()) if args.altchars else uid.as_b64()) if args.base64 else uid)
 
 

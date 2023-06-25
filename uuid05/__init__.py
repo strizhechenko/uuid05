@@ -17,7 +17,9 @@ class UUID05(int):
         If you're using uuid05 results as strings and want it to be more compact, and being integer or not doesn't matter
         you may use this function to encode it to base64. You can transparently pass arguments of b64encode function here.
         As there's not decoding assumed padding symbols are removed.
-        %timeit b64(uuid05()) - 2.87 µs ± 13.9 ns per loop @ 3.2GHz
+        %timeit UUID05.make().as_b64() - 2.87 µs ± 13.9 ns per loop @ 3.2 GHz
+        %timeit UUID05.make().as_b64() - 1.54 µs ± 5.25 ns per loop @ 3.8 GHz
+        %timeit UUID05(1333).as_b64() - 608 ns ± 2.68 ns per loop (with static UUID (skips generation))
         >>> UUID05(34714).as_b64(altchars=b'_-')
         'h5o'
         >>> UUID05(11402098).as_b64(altchars=b'_-')
@@ -36,7 +38,9 @@ class UUID05(int):
         Compact human-readable unique identifiers for temporary objects in small non-synchronizing distributed systems.
         If your objects are persistent - you'd better use nanoid.
         If you need to generate multiple UIDs for multiple object at once - generate one and use loop variable as suffix.
-        %timeit uuid05() - 2.1 µs ± 2.08 ns per loop @ 3.2GHz
+        %timeit UUID05.make() - 2.1 µs ± 2.08 ns per loop @ 3.2GHz
+        %timeit UUID05.make() - 849 ns ± 1.73 ns per loop @ 3.8GHz
+        %timeit UUID05.make() - 717 ns ± 1.76 ns per loop @ 4.7GHz
         :arg workers - count of hosts in a system;
         :arg ttl - how many seconds a temporary object lives in a system (maximum) before being deleted;
         :arg precision (optional) - you can override (increase) a precision if objects are created frequently (max - 6);
@@ -53,10 +57,10 @@ class UUID05(int):
         return UUID05(f'{run_id}{time_id}')
 
     @classmethod
-    def uuid05_max_value(cls, machines=10, ttl=2 * day, precision=0) -> 'UUID05':
+    def max_value(cls, workers=10, ttl=2 * day, precision=0) -> 'UUID05':
         """:returns - maximum value of an uuid05 with given params"""
-        precision = min(precision or int(machines ** (1 / 4)), 6)
-        run_id = machines - 1
+        precision = min(precision or int(workers ** (1 / 4)), 6)
+        run_id = workers - 1
         time_id = ttl * ((10 ** precision) - 1)
         return UUID05(f'{run_id}{time_id}')
 
@@ -67,6 +71,6 @@ if __name__ == '__main__':
         for _workers in 2, 4, 10, 16, 32, 256:
             worker_id = randint(0, _workers)
             example_value = UUID05.make(_workers, _ttl)
-            max_value = UUID05.uuid05_max_value(_workers, _ttl)
+            max_value = UUID05.max_value(_workers, _ttl)
             max_in_b64 = max_value.as_b64(altchars=b'-_')
             print(f'| {_ttl} | {_workers} | {worker_id} | {example_value} | {max_value} | {max_in_b64} |')

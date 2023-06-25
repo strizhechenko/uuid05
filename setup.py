@@ -3,7 +3,7 @@ from setuptools import setup
 
 setup(
     name='uuid05',
-    version='0.0.2',
+    version='0.0.3',
     packages=['uuid05'],
     url='https://github.com/strizhechenko/uuid05',
     license='MIT',
