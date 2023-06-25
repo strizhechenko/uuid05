@@ -46,6 +46,7 @@ class UUID05(int):
         >>> assert UUID05.make(16, 3600) <= 15356400
         >>> assert UUID05.make(16, 1800) <= 15178200
         >>> assert UUID05.make() != UUID05.make()
+        >>> assert len(set([UUID05.make() for _ in range(1000)])) == 1000
         """
         precision = min(6, precision or int(workers ** (1 / 4)))
         run_id = worker_id % (workers - 1)
