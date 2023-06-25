@@ -4,10 +4,11 @@ in small non-synchronizing distributed systems.
 Well, it's not really unique (that's why 0.5) and collisions are possible
 but probability is low and it's probably acceptable.
 
-The library have zero dependencies and provides you with a class: `UUID05` based on `int` with two additional methods:
+The library have zero dependencies (well, you need python3 and pip) and provides you with `UUID05` class
+based on `int` with two additional methods:
 
 - `make()` - sort of constructor.
-- `as_b64() -> str` - alternative representation.
+- `as_b64() -> str` - alternative compact representation.
 
 **Examples** below explain how it works:
 
@@ -29,7 +30,7 @@ The library have zero dependencies and provides you with a class: `UUID05` based
 ## Installing
 
 ``` shell
-pip install uuid05
+pip3 install uuid05
 ```
 
 ## Using
@@ -108,4 +109,7 @@ Otherwise Redis, Memcached or another database with a single INCRementing counte
 ## Development
 
 - Tests are doctests and may be run by `pytest`.
+- Benchmarks - use `%timeit` in `ipython`
 - Documentation - look at code, it's just two files.
+- Build - `python3 -m build --sdist --wheel`.
+- Release -m `twine check dist/uuid05-<version>* && twine upload dist/uuid05-<version>*`.
