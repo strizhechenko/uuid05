@@ -114,9 +114,11 @@ Otherwise Redis, Memcached or another database with a single INCRementing counte
 |:------------------------|--------------------:|---------------------------------------|--------------:|
 | `UUID05.make()`         |              3.8GHz | True                                  |           868 |
 | `UUID05.make()`         |              3.8GHz | False                                 |          1300 |
+| `uuid.uuid4()`          |              3.8GHz | n/a                                   |          1500 |
 | `UUID05.make()`         |              4.7GHz | True                                  |           779 |
 | `UUID05.make()`         |              4.7GHz | False                                 |          1070 |
 | `UUID05(1333).as_b64()` |              3.8GHz | n/a                                   |           596 |
+| `str(uuid.UUID)`        |              3.8GHz | n/a                                   |           570 |
 
 ## Development
 
@@ -125,3 +127,4 @@ Otherwise Redis, Memcached or another database with a single INCRementing counte
 - Documentation - look at code, it's just two files.
 - Build - `python3 -m build --sdist --wheel`.
 - Release `twine check dist/uuid05-<version>* && twine upload dist/uuid05-<version>*`.
+- Design - `UUID05` class doesn't try to copy `uuid` module methods, properties and behavior. Speed also isn't a goal.
