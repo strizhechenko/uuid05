@@ -112,4 +112,4 @@ Otherwise Redis, Memcached or another database with a single INCRementing counte
 - Benchmarks - use `%timeit` in `ipython`
 - Documentation - look at code, it's just two files.
 - Build - `python3 -m build --sdist --wheel`.
-- Release -m `twine check dist/uuid05-<version>* && twine upload dist/uuid05-<version>*`.
+- Release `twine check dist/uuid05-<version>* && twine upload dist/uuid05-<version>*`.
