@@ -2,12 +2,13 @@
 
 from argparse import ArgumentParser
 
-from uuid05 import UUID05
+import uuid05
 
 
 def main():
     parser = ArgumentParser()
     parser.add_argument('-w', '--workers', type=int, help='Amount of worker processes.')
+    parser.add_argument('-i', '--worker-id', type=int, help='Identifier of current worker (int)')
     parser.add_argument('-t', '--ttl', type=int, help='How many seconds an object lives before being deleted.')
     parser.add_argument('-p', '--precision', type=int, help='Increase up to 6 if you create objects frequently.')
     parser.add_argument('-b', '--base64', action='store_true', help='Use base64 to compact it event more')
@@ -21,7 +22,9 @@ def main():
         kwargs['ttl'] = args.ttl
     if args.precision:
         kwargs['precision'] = args.precision
-    uid: UUID05 = UUID05.max_value(**kwargs) if args.max_value else UUID05.make(**kwargs)
+    if args.worker_id:
+        uuid05.worker_id = args.worker_id
+    uid: uuid05.UUID05 = uuid05.UUID05.max_value(**kwargs) if args.max_value else uuid05.UUID05.make(**kwargs)
     print((uid.as_b64(altchars=args.altchars.encode()) if args.altchars else uid.as_b64()) if args.base64 else uid)
 
 
