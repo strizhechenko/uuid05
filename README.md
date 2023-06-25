@@ -84,7 +84,7 @@ $ uuid05 --help
 In E2E/UI-testing. It's slow, and sometimes you need to check a data created by tests _after_ run.
 
 Or, more generally, in staging environments where you aren't sure that your _testing_ system 
-will delete data after runs, but _tested_ system is aware of such a data and deletes it after some time.
+will delete data after runs, but the _tested_ system is aware of such a data and deletes it after some time.
 There's also be multiple testing systems instances running simultaneously, and you don't want them to affect each other.
 
 You also may want identifiers to be more or less rememberable for at least 10-15 seconds while you switching tabs.
@@ -94,17 +94,17 @@ Otherwise Redis, Memcached or another database with a single INCRementing counte
 
 ## When UUID05 is useless
 
-- If your system isn't distributed. Local counter in memory or file will work better.
-- If your objects are persistent - you'd better use [py-nanoid](https://github.com/puyuan/py-nanoid). 
+- If your system isn't distributed, local counter in memory or file will work better.
+- If your objects are persistent, you'd better use [py-nanoid](https://github.com/puyuan/py-nanoid).
 - If you need to generate multiple UIDs for multiple object really _quick_:
   - generate one and reuse it, using a semantic or loop variable as a suffix;
   - pass **precision** argument to `uuid05()`. It scales automatically with worker count,
     but if there are less than 16 workers, default is 1 which means 1 uuid per 0.1 second, usually it's enough.
     - `precision=3` argument will use milliseconds.
     - `precision=6` for microseconds.
-  - if `precision=6` is not enough stop trying to make your identifier compact.
+  - if `precision=6` is not enough, stop trying to make your identifier compact.
 - If you believe that semi-persistent data is a testing antipattern,
-  and it should be cleared by testing system before or after each run.
+  and it should be cleared by the testing system before or after each run.
 
 ## Development
 
