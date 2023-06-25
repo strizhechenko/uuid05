@@ -1,5 +1,5 @@
 **UUID05** - compact human-readable almost unique identifiers for temporary objects
-in small non-synchronizing distributed systems.
+in small non-synchronizing distributed systems. Inspired by nanoid and mktemp utility.
 
 Well, it's not really unique (that's why 0.5) and collisions are possible
 but probability is low and it's probably acceptable.
