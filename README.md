@@ -11,7 +11,7 @@ The library have zero dependencies and provides you with a class: `UUID05` based
 
 **Examples** below explain how it works:
 
-| TTL <br/>(seconds) | Workers | Worker ID | Example value |     Max value | int2b64(max_value) |
+| TTL <br/>(seconds) | Workers | Worker ID | Example value |     Max value | .as_b64(max_value) |
 |-------------------:|--------:|----------:|--------------:|--------------:|--------------------|
 |        (hour) 3600 |       2 |         1 |          9589 |        132400 | AgUw               |
 |               3600 |       4 |         2 |         29589 |        332400 | BRJw               |
